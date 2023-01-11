@@ -1,0 +1,5 @@
+Flask
+Pandas
+matplotlib
+openpyxl
+flask_wtf
