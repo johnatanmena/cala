@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template
 import pandas as pd
 import json
@@ -6,6 +7,8 @@ from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
 import os
+import boto3
+import time
 
 app = Flask(__name__,template_folder="template")
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -31,6 +34,16 @@ cruce["NOMBRECOMPLETO"]= cruce["NOMBRECOMPLETO"].str.capitalize(); # Convettir s
 cruce = cruce.iloc[:,0:8]
 result = cruce.to_json(orient="records")
 parsed = json.loads(result) # Convertir archivo dataframe en formato JSON
+
+s3 = boto3.client("s3")
+client = boto3.client('s3',
+    aws_access_key_id='AKIARXJBCZERBOKSPFFF',
+    aws_secret_access_key='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',
+)
+
+# s3.download_file(
+#     Bucket="corpstudios", Key="stage_area/catalogos/OASIS_MST_CATEGORIA.csv", Filename="static/files/OASIS_MST_CATEGORIA.csv"
+# )
 class Uploadfile(FlaskForm):
     file = FileField("File")
     submit = SubmitField("Upload File")
@@ -40,8 +53,11 @@ def index():
     form = Uploadfile()
     if form.validate_on_submit():
         file = form.file.data
+        print(file)
         try:
             file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename)))
+            s3.upload_file(
+                Filename="static/files/ejercicio1_b1.xlsx", Bucket="corpstudios", Key="stage_area/geografias_panama/nielsen_panama/input_files/ejercicio1_b1.xlsx")
         except FileNotFoundError as e:
             print('Suba por favor un archivo')
     return render_template("index.html",form=form)
@@ -57,6 +73,6 @@ def grafi():
     x = plt.show()
     return render_template("graficos.html", x=x)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
