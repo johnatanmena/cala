@@ -14,10 +14,6 @@ app = Flask(__name__,template_folder="template")
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 s3 = boto3.client("s3")
-# client = boto3.client('s3',
-#     aws_access_key_id='AKIARXJBCZERBOKSPFFF',
-#     aws_secret_access_key='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',
-# )
 
 # s3.download_file(
 #     Bucket="corpstudios", Key="stage_area/catalogos/OASIS_MST_CATEGORIA.csv", Filename="static/files/OASIS_MST_CATEGORIA.csv"
