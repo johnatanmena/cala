@@ -4,3 +4,4 @@ matplotlib
 openpyxl
 flask_wtf
 boto3
+requires.io
